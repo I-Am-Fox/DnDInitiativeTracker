@@ -5,53 +5,41 @@
       xmlns:vm="clr-namespace:DnDInitiativeTracker.ViewModels"
       Title="Campaigns"
       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-      Background="{DynamicResource ApplicationBackgroundBrush}">
-
-    <Page.Resources>
-        <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="FontSize"   Value="10.5"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}"/>
-            <Setter Property="Margin"     Value="0,0,0,3"/>
-        </Style>
-    </Page.Resources>
+      Background="Transparent">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="24,20,24,24" MaxWidth="520" HorizontalAlignment="Left">
+        <StackPanel Margin="32,24,32,32" MaxWidth="600" HorizontalAlignment="Left">
 
             <!-- Header -->
             <TextBlock Text="Campaigns"
-                       FontSize="28" FontWeight="Bold"
-                       Margin="0,0,0,4"/>
+                       Style="{StaticResource PageHeaderStyle}"/>
             <TextBlock Text="Select or create a campaign to get started."
-                       FontSize="13"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                       Margin="0,0,0,20"/>
+                       Style="{StaticResource PageSubheaderStyle}"/>
 
             <!-- New campaign button -->
             <ui:Button Content="New Campaign"
                        Icon="{ui:SymbolIcon Add24}"
                        Command="{Binding BeginCreateCampaignCommand}"
                        Appearance="Primary"
-                       Margin="0,0,0,16"/>
+                       Style="{StaticResource PrimaryButtonStyle}"
+                       Margin="0,0,0,20"/>
 
             <!-- New campaign form -->
-            <ui:Card Margin="0,0,0,16"
-                     Visibility="{Binding IsCreatingCampaign, Converter={StaticResource BoolToVisibility}}">
+            <Border Style="{StaticResource DashboardCardStyle}"
+                    Margin="0,0,0,20"
+                    Visibility="{Binding IsCreatingCampaign, Converter={StaticResource BoolToVisibility}}">
                 <StackPanel>
-                    <TextBlock Text="NEW CAMPAIGN" FontSize="11" FontWeight="Bold"
-                               Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
-                               Margin="0,0,0,12"/>
+                    <TextBlock Text="NEW CAMPAIGN" Style="{StaticResource SectionHeaderStyle}"/>
 
-                    <TextBlock Text="CAMPAIGN NAME" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="CAMPAIGN NAME" Style="{StaticResource FieldLabelStyle}"/>
                     <ui:TextBox Text="{Binding NewCampaignName, UpdateSourceTrigger=PropertyChanged}"
                                 PlaceholderText="e.g. The Lost Mine"
-                                Margin="0,0,0,10"/>
+                                Margin="0,0,0,12"/>
 
-                    <TextBlock Text="DESCRIPTION (OPTIONAL)" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="DESCRIPTION (OPTIONAL)" Style="{StaticResource FieldLabelStyle}"/>
                     <ui:TextBox Text="{Binding NewCampaignDescription, UpdateSourceTrigger=PropertyChanged}"
                                 PlaceholderText="A short description…"
-                                Margin="0,0,0,10"/>
+                                Margin="0,0,0,12"/>
 
                     <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="{DynamicResource SystemFillColorCriticalBrush}"
@@ -61,46 +49,63 @@
                     <StackPanel Orientation="Horizontal">
                         <ui:Button Content="Create"
                                    Appearance="Primary"
+                                   Style="{StaticResource PrimaryButtonStyle}"
                                    Command="{Binding ConfirmCreateCampaignCommand}"
                                    Margin="0,0,8,0"/>
                         <ui:Button Content="Cancel"
+                                   Style="{StaticResource SecondaryButtonStyle}"
                                    Command="{Binding CancelCreateCampaignCommand}"/>
                     </StackPanel>
                 </StackPanel>
-            </ui:Card>
+            </Border>
 
             <!-- Campaign list -->
             <ItemsControl ItemsSource="{Binding Campaigns}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <ui:CardAction Margin="0,0,0,8"
-                                       Command="{Binding DataContext.SelectCampaignCommand,
-                                                 RelativeSource={RelativeSource AncestorType=Page}}"
-                                       CommandParameter="{Binding}">
+                        <Border Style="{StaticResource DashboardCardStyle}" Margin="0,0,0,10"
+                                Cursor="Hand"
+                                MouseLeftButtonUp="CampaignCard_Click">
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
+                                <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10"
+                                        Margin="0,0,14,0" VerticalAlignment="Center">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#4A90D9" Offset="0"/>
+                                            <GradientStop Color="#357ABD" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <ui:SymbolIcon Symbol="BookStar24" FontSize="18"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15"/>
                                     <TextBlock Text="{Binding Description}"
                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                FontSize="12" TextTrimming="CharacterEllipsis"
                                                Margin="0,3,0,0"/>
                                 </StackPanel>
 
-                                <ui:Button Grid.Column="1"
+                                <ui:Button Grid.Column="2"
                                            Icon="{ui:SymbolIcon Delete24}"
                                            Appearance="Danger"
                                            ToolTip="Delete campaign"
                                            VerticalAlignment="Center"
+                                           CornerRadius="8"
                                            Command="{Binding DataContext.DeleteCampaignCommand,
                                                      RelativeSource={RelativeSource AncestorType=Page}}"
                                            CommandParameter="{Binding}"/>
                             </Grid>
-                        </ui:CardAction>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

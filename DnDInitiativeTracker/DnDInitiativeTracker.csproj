@@ -10,6 +10,7 @@
     <AssemblyName>DnDInitiativeTracker</AssemblyName>
     <Version>1.1.0</Version>
     <StartupObject>DnDInitiativeTracker.Program</StartupObject>
+    <ApplicationIcon>Assets\dice.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,9 @@
     <Compile Remove="EvaluationViewModel.cs" />
     <Compile Remove="Windows\**" />
     <Page Remove="Windows\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\dice.ico" />
   </ItemGroup>
 
 </Project>

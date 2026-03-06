@@ -1,27 +1,24 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
-using DnDInitiativeTracker.Pages;
 using DnDInitiativeTracker.ViewModels;
 using Wpf.Ui;
-using Wpf.Ui.Abstractions;
 
 namespace DnDInitiativeTracker;
 
 public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
 {
-    private readonly INavigationService _navigation;
     private readonly ISnackbarService _snackbars;
+    private readonly ShellViewModel _shell;
+    private bool _suppressNavEvent;
 
-    public MainWindow(MainWindowViewModel vm, INavigationService navigation,
-        INavigationViewPageProvider pageProvider, ISnackbarService snackbars)
+    public MainWindow(MainWindowViewModel vm, ISnackbarService snackbars)
     {
         InitializeComponent();
         DataContext = vm;
 
         _snackbars = snackbars;
-        _navigation = navigation;
-        _navigation.SetNavigationControl(RootNavigationView);
-        RootNavigationView.SetPageProviderService(pageProvider);
+        _shell = vm.Shell;
 
         _snackbars.SetSnackbarPresenter(SnackbarPresenter);
 
@@ -30,7 +27,20 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        Dispatcher.InvokeAsync(() => _navigation.Navigate(typeof(CampaignsPage)), DispatcherPriority.Loaded);
+        Dispatcher.InvokeAsync(() => _shell.Navigate("Campaigns"), DispatcherPriority.Loaded);
+    }
+
+    private void NavListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_suppressNavEvent) return;
+        if (sender is ListBox listBox && listBox.SelectedItem is ListBoxItem item)
+        {
+            var tag = item.Tag?.ToString();
+            if (!string.IsNullOrEmpty(tag))
+            {
+                _shell.Navigate(tag);
+            }
+        }
     }
 }
 

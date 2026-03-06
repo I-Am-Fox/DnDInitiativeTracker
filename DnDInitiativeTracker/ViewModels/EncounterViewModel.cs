@@ -17,7 +17,7 @@ public sealed partial class EncounterViewModel : ObservableObject
     private readonly IInitiativeOrderingService _initiativeOrderingService;
     private readonly ICreatureCatalogService _creatureCatalogService;
     private readonly ISnackbarService _snackbar;
-    private readonly INavigationService _navigation;
+    private ShellViewModel? _shell;
 
     private string _campaignSlug = string.Empty;
 
@@ -90,16 +90,19 @@ public sealed partial class EncounterViewModel : ObservableObject
         ICharacterRepository characterRepository,
         IInitiativeOrderingService initiativeOrderingService,
         ICreatureCatalogService creatureCatalogService,
-        ISnackbarService snackbar,
-        INavigationService navigation)
+        ISnackbarService snackbar)
     {
         _encounterRepository = encounterRepository;
         _characterRepository = characterRepository;
         _initiativeOrderingService = initiativeOrderingService;
         _creatureCatalogService = creatureCatalogService;
         _snackbar = snackbar;
-        _navigation = navigation;
     }
+
+    /// <summary>
+    /// Called after DI construction to wire up the shell reference (avoids circular DI).
+    /// </summary>
+    public void SetShell(ShellViewModel shell) => _shell = shell;
 
     public async Task LoadForCampaignAsync(string campaignSlug, Campaign campaign)
     {
@@ -126,7 +129,7 @@ public sealed partial class EncounterViewModel : ObservableObject
     private void SelectEncounter(Encounter encounter)
     {
         SelectedEncounter = encounter;
-        _navigation.Navigate(typeof(InitiativePage));
+        _shell?.NavigateTo<InitiativePage>();
     }
 
     [RelayCommand]
@@ -175,7 +178,7 @@ public sealed partial class EncounterViewModel : ObservableObject
         _snackbar.Show("Encounter Created", $"\"{encounter.Name}\" is ready.",
             ControlAppearance.Success, new SymbolIcon(SymbolRegular.Checkmark24), TimeSpan.FromSeconds(3));
 
-        _navigation.Navigate(typeof(InitiativePage));
+        _shell?.NavigateTo<InitiativePage>();
     }
 
     partial void OnSelectedEncounterChanged(Encounter? value)

@@ -11,10 +11,12 @@ public sealed partial class MainWindowViewModel : ObservableObject
     private string _applicationTitle = "D&D Initiative Tracker";
 
     public UpdateViewModel Update { get; }
+    public ShellViewModel Shell { get; }
 
-    public MainWindowViewModel(UpdateViewModel updateViewModel)
+    public MainWindowViewModel(UpdateViewModel updateViewModel, ShellViewModel shellViewModel)
     {
         Update = updateViewModel;
+        Shell = shellViewModel;
     }
 }
 

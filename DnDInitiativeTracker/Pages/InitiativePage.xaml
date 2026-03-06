@@ -5,7 +5,7 @@
       xmlns:vm="clr-namespace:DnDInitiativeTracker.ViewModels"
       Title="Initiative"
       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-      Background="{DynamicResource ApplicationBackgroundBrush}">
+      Background="Transparent">
 
     <Page.Resources>
         <Style x:Key="StatLabel" TargetType="TextBlock">
@@ -15,12 +15,6 @@
         <Style x:Key="StatValue" TargetType="TextBlock">
             <Setter Property="FontSize"   Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
-        <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="FontSize"   Value="10.5"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}"/>
-            <Setter Property="Margin"     Value="0,0,0,3"/>
         </Style>
     </Page.Resources>
 
@@ -34,14 +28,14 @@
         </Grid.RowDefinitions>
 
         <!-- Header + toolbar -->
-        <Grid Grid.Row="0" Margin="24,20,24,0">
+        <Grid Grid.Row="0" Margin="32,24,32,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0">
-                <TextBlock Text="Initiative Order" FontSize="28" FontWeight="Bold"/>
+                <TextBlock Text="Initiative Order" Style="{StaticResource PageHeaderStyle}"/>
                 <TextBlock Text="{Binding EncounterName}"
                            FontSize="13"
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -52,24 +46,28 @@
                 <ui:Button Content="Sort"
                            Icon="{ui:SymbolIcon ArrowSort24}"
                            Command="{Binding AutoSortCombatantsCommand}"
+                           Style="{StaticResource SecondaryButtonStyle}"
                            Margin="0,0,8,0"/>
                 <ui:Button Content="Add Combatant"
                            Icon="{ui:SymbolIcon PersonAdd24}"
                            Appearance="Primary"
+                           Style="{StaticResource PrimaryButtonStyle}"
                            Command="{Binding BeginAddCombatantCommand}"
                            Margin="0,0,8,0"/>
                 <ui:Button Content="Import Creature"
                            Icon="{ui:SymbolIcon ArrowDownload24}"
+                           Style="{StaticResource SecondaryButtonStyle}"
                            Command="{Binding BeginImportCreatureCommand}"
                            Margin="0,0,8,0"/>
                 <ui:Button Content="Import from Campaign"
                            Icon="{ui:SymbolIcon People24}"
+                           Style="{StaticResource SecondaryButtonStyle}"
                            Command="{Binding BeginImportFromCampaignCommand}"/>
             </StackPanel>
         </Grid>
 
         <!-- Combatant list -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="24,12,24,0">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="32,16,32,0">
             <ListBox x:Name="CombatantListBox"
                      ItemsSource="{Binding Combatants}"
                      AllowDrop="True"
@@ -79,7 +77,7 @@
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Padding"  Value="0"/>
-                        <Setter Property="Margin"   Value="0,0,0,8"/>
+                        <Setter Property="Margin"   Value="0,0,0,10"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
@@ -91,10 +89,10 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:CombatantViewModel}">
-                        <ui:Card Padding="14,10" Cursor="SizeAll">
+                        <Border Style="{StaticResource DashboardCardStyle}" Cursor="SizeAll">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="44"/>
+                                    <ColumnDefinition Width="48"/>
                                     <ColumnDefinition Width="16"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="44"/>
@@ -103,7 +101,7 @@
 
                                 <!-- Initiative badge -->
                                 <Border Grid.Column="0"
-                                        Width="36" Height="36" CornerRadius="8"
+                                        Width="40" Height="40" CornerRadius="10"
                                         VerticalAlignment="Center">
                                     <Border.Background>
                                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -112,7 +110,7 @@
                                         </LinearGradientBrush>
                                     </Border.Background>
                                     <TextBlock Text="{Binding InitiativeRoll}"
-                                               FontWeight="Bold" FontSize="14"
+                                               FontWeight="Bold" FontSize="15"
                                                Foreground="#1A1A1A"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"/>
@@ -152,7 +150,7 @@
 
                                 <!-- Image thumbnail -->
                                 <Border Grid.Column="3"
-                                        Width="36" Height="36" CornerRadius="6"
+                                        Width="36" Height="36" CornerRadius="8"
                                         VerticalAlignment="Center" ClipToBounds="True"
                                         Visibility="{Binding ImageUrl, Converter={StaticResource BoolToVisibility}}">
                                     <Image Stretch="UniformToFill"
@@ -164,37 +162,36 @@
                                            Icon="{ui:SymbolIcon Dismiss24}"
                                            Appearance="Danger"
                                            Padding="6"
+                                           CornerRadius="8"
                                            VerticalAlignment="Center"
                                            Command="{Binding DataContext.RemoveCombatantCommand,
                                                      RelativeSource={RelativeSource AncestorType=Page}}"
                                            CommandParameter="{Binding}"/>
                             </Grid>
-                        </ui:Card>
+                        </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </ScrollViewer>
 
         <!-- Add combatant form -->
-        <ui:Card Grid.Row="2" Margin="24,10,24,0"
-                 Visibility="{Binding IsAddingCombatant, Converter={StaticResource BoolToVisibility}}">
+        <Border Grid.Row="2" Style="{StaticResource DashboardCardStyle}" Margin="32,12,32,0"
+                Visibility="{Binding IsAddingCombatant, Converter={StaticResource BoolToVisibility}}">
             <StackPanel>
-                <TextBlock Text="ADD COMBATANT" FontSize="11" FontWeight="Bold"
-                           Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
-                           Margin="0,0,0,12"/>
-                <Grid Margin="0,0,0,10">
+                <TextBlock Text="ADD COMBATANT" Style="{StaticResource SectionHeaderStyle}"/>
+                <Grid Margin="0,0,0,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="110"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="NAME" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="NAME" Style="{StaticResource FieldLabelStyle}"/>
                         <ui:TextBox Text="{Binding NewCombatantName, UpdateSourceTrigger=PropertyChanged}"
                                     PlaceholderText="Combatant name"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <TextBlock Text="INITIATIVE" Style="{StaticResource FieldLabel}"/>
+                        <TextBlock Text="INITIATIVE" Style="{StaticResource FieldLabelStyle}"/>
                         <ui:TextBox Text="{Binding NewCombatantInitiative, UpdateSourceTrigger=PropertyChanged}"
                                     PlaceholderText="0"/>
                     </StackPanel>
@@ -206,23 +203,23 @@
                 <StackPanel Orientation="Horizontal">
                     <ui:Button Content="Add"
                                Appearance="Primary"
+                               Style="{StaticResource PrimaryButtonStyle}"
                                Command="{Binding ConfirmAddCombatantCommand}"
                                Margin="0,0,8,0"/>
                     <ui:Button Content="Cancel"
+                               Style="{StaticResource SecondaryButtonStyle}"
                                Command="{Binding CancelAddCombatantCommand}"/>
                 </StackPanel>
             </StackPanel>
-        </ui:Card>
+        </Border>
 
         <!-- Import creature panel -->
-        <ui:Card Grid.Row="3" Margin="24,10,24,16"
-                 Visibility="{Binding IsImportingCreature, Converter={StaticResource BoolToVisibility}}">
+        <Border Grid.Row="3" Style="{StaticResource DashboardCardStyle}" Margin="32,12,32,0"
+                Visibility="{Binding IsImportingCreature, Converter={StaticResource BoolToVisibility}}">
             <StackPanel>
-                <TextBlock Text="IMPORT FROM 5E API" FontSize="11" FontWeight="Bold"
-                           Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
-                           Margin="0,0,0,12"/>
-                <TextBlock Text="SEARCH" Style="{StaticResource FieldLabel}"/>
-                <Grid Margin="0,0,0,10">
+                <TextBlock Text="IMPORT FROM 5E API" Style="{StaticResource SectionHeaderStyle}"/>
+                <TextBlock Text="SEARCH" Style="{StaticResource FieldLabelStyle}"/>
+                <Grid Margin="0,0,0,12">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="12"/>
@@ -235,12 +232,13 @@
                                Content="Search"
                                Icon="{ui:SymbolIcon Search24}"
                                Appearance="Primary"
+                               Style="{StaticResource PrimaryButtonStyle}"
                                Command="{Binding SearchCreaturesCommand}"/>
                 </Grid>
-                <TextBlock Text="RESULTS" Style="{StaticResource FieldLabel}"/>
+                <TextBlock Text="RESULTS" Style="{StaticResource FieldLabelStyle}"/>
                 <ListBox ItemsSource="{Binding SearchResults}"
                          SelectedItem="{Binding SelectedCreatureTemplate, Mode=TwoWay}"
-                         MaxHeight="140" Margin="0,0,0,10"
+                         MaxHeight="140" Margin="0,0,0,12"
                          Background="{DynamicResource ControlFillColorDefaultBrush}"
                          BorderThickness="1"
                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
@@ -251,8 +249,8 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="INITIATIVE" Style="{StaticResource FieldLabel}"/>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="INITIATIVE" Style="{StaticResource FieldLabelStyle}"/>
                     <ui:TextBox Text="{Binding NewCreatureInitiative, UpdateSourceTrigger=PropertyChanged}"
                                 PlaceholderText="0" MaxWidth="110" HorizontalAlignment="Left"/>
                 </StackPanel>
@@ -263,23 +261,23 @@
                 <StackPanel Orientation="Horizontal">
                     <ui:Button Content="Import Selected"
                                Appearance="Primary"
+                               Style="{StaticResource PrimaryButtonStyle}"
                                Command="{Binding ConfirmImportCreatureCommand}"
                                Margin="0,0,8,0"
                                IsEnabled="{Binding SelectedCreatureTemplate,
                                            Converter={StaticResource BoolToVisibility}}"/>
                     <ui:Button Content="Cancel"
+                               Style="{StaticResource SecondaryButtonStyle}"
                                Command="{Binding CancelImportCreatureCommand}"/>
                 </StackPanel>
             </StackPanel>
-        </ui:Card>
+        </Border>
 
         <!-- Import from Campaign panel -->
-        <ui:Card Grid.Row="4" Margin="24,10,24,16"
-                 Visibility="{Binding IsImportingFromCampaign, Converter={StaticResource BoolToVisibility}}">
+        <Border Grid.Row="4" Style="{StaticResource DashboardCardStyle}" Margin="32,12,32,20"
+                Visibility="{Binding IsImportingFromCampaign, Converter={StaticResource BoolToVisibility}}">
             <StackPanel>
-                <TextBlock Text="IMPORT FROM CAMPAIGN" FontSize="11" FontWeight="Bold"
-                           Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
-                           Margin="0,0,0,12"/>
+                <TextBlock Text="IMPORT FROM CAMPAIGN" Style="{StaticResource SectionHeaderStyle}"/>
 
                 <TextBlock Text="Select characters and set their initiative rolls."
                            FontSize="12"
@@ -307,8 +305,7 @@
                                 </StackPanel>
 
                                 <TextBlock Grid.Column="2" Text="Initiative"
-                                           FontSize="10.5" FontWeight="SemiBold"
-                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                           Style="{StaticResource FieldLabelStyle}"
                                            VerticalAlignment="Center" Margin="0,0,6,0"/>
 
                                 <ui:TextBox Grid.Column="3"
@@ -328,13 +325,15 @@
                 <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                     <ui:Button Content="Import Selected"
                                Appearance="Primary"
+                               Style="{StaticResource PrimaryButtonStyle}"
                                Command="{Binding ConfirmImportFromCampaignCommand}"
                                Margin="0,0,8,0"/>
                     <ui:Button Content="Cancel"
+                               Style="{StaticResource SecondaryButtonStyle}"
                                Command="{Binding CancelImportFromCampaignCommand}"/>
                 </StackPanel>
             </StackPanel>
-        </ui:Card>
+        </Border>
     </Grid>
 </Page>
 

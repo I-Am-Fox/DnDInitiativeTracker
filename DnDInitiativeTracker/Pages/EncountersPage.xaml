@@ -4,24 +4,14 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       Title="Encounters"
       Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-      Background="{DynamicResource ApplicationBackgroundBrush}">
-
-    <Page.Resources>
-        <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="FontSize"   Value="10.5"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}"/>
-            <Setter Property="Margin"     Value="0,0,0,3"/>
-        </Style>
-    </Page.Resources>
+      Background="Transparent">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="24,20,24,24" MaxWidth="520" HorizontalAlignment="Left">
+        <StackPanel Margin="32,24,32,32" MaxWidth="600" HorizontalAlignment="Left">
 
             <!-- Header -->
             <TextBlock Text="Encounters"
-                       FontSize="28" FontWeight="Bold"
-                       Margin="0,0,0,4"/>
+                       Style="{StaticResource PageHeaderStyle}"/>
             <TextBlock Text="{Binding SelectedCampaignName}"
                        FontSize="13"
                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -29,7 +19,7 @@
             <TextBlock Text="Select a campaign first to manage encounters."
                        FontSize="12"
                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                       Margin="0,0,0,20"
+                       Margin="0,0,0,24"
                        Visibility="{Binding HasNoCampaign, Converter={StaticResource BoolToVisibility}}"/>
 
             <!-- New encounter button -->
@@ -37,21 +27,21 @@
                        Icon="{ui:SymbolIcon Add24}"
                        Command="{Binding BeginCreateEncounterCommand}"
                        Appearance="Primary"
-                       Margin="0,0,0,16"
+                       Style="{StaticResource PrimaryButtonStyle}"
+                       Margin="0,0,0,20"
                        IsEnabled="{Binding HasCampaign}"/>
 
             <!-- New encounter form -->
-            <ui:Card Margin="0,0,0,16"
-                     Visibility="{Binding IsCreatingEncounter, Converter={StaticResource BoolToVisibility}}">
+            <Border Style="{StaticResource DashboardCardStyle}"
+                    Margin="0,0,0,20"
+                    Visibility="{Binding IsCreatingEncounter, Converter={StaticResource BoolToVisibility}}">
                 <StackPanel>
-                    <TextBlock Text="NEW ENCOUNTER" FontSize="11" FontWeight="Bold"
-                               Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
-                               Margin="0,0,0,12"/>
+                    <TextBlock Text="NEW ENCOUNTER" Style="{StaticResource SectionHeaderStyle}"/>
 
-                    <TextBlock Text="ENCOUNTER NAME" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="ENCOUNTER NAME" Style="{StaticResource FieldLabelStyle}"/>
                     <ui:TextBox Text="{Binding NewEncounterName, UpdateSourceTrigger=PropertyChanged}"
                                 PlaceholderText="e.g. Goblin Ambush"
-                                Margin="0,0,0,10"/>
+                                Margin="0,0,0,12"/>
 
                     <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="{DynamicResource SystemFillColorCriticalBrush}"
@@ -61,46 +51,54 @@
                     <StackPanel Orientation="Horizontal">
                         <ui:Button Content="Create"
                                    Appearance="Primary"
+                                   Style="{StaticResource PrimaryButtonStyle}"
                                    Command="{Binding ConfirmCreateEncounterCommand}"
                                    Margin="0,0,8,0"/>
                         <ui:Button Content="Cancel"
+                                   Style="{StaticResource SecondaryButtonStyle}"
                                    Command="{Binding CancelCreateEncounterCommand}"/>
                     </StackPanel>
                 </StackPanel>
-            </ui:Card>
+            </Border>
 
             <!-- Encounter list -->
             <ItemsControl ItemsSource="{Binding Encounters}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <ui:CardAction Margin="0,0,0,8"
-                                       Command="{Binding DataContext.SelectEncounterCommand,
-                                                 RelativeSource={RelativeSource AncestorType=Page}}"
-                                       CommandParameter="{Binding}">
+                        <Border Style="{StaticResource DashboardCardStyle}" Margin="0,0,0,10"
+                                Cursor="Hand"
+                                MouseLeftButtonUp="EncounterCard_Click">
                             <Grid>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <ui:SymbolIcon Symbol="Flash24"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                   Margin="0,0,10,0"/>
-                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"
-                                               VerticalAlignment="Center"/>
-                                </StackPanel>
+                                <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10"
+                                        Margin="0,0,14,0" VerticalAlignment="Center"
+                                        Background="#2A3A5C">
+                                    <ui:SymbolIcon Symbol="Flash24" FontSize="18"
+                                                   Foreground="#4A90D9"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                </Border>
 
-                                <ui:Button Grid.Column="1"
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Name}" FontWeight="SemiBold" FontSize="15"
+                                           VerticalAlignment="Center"/>
+
+                                <ui:Button Grid.Column="2"
                                            Icon="{ui:SymbolIcon Delete24}"
                                            Appearance="Danger"
                                            ToolTip="Delete encounter"
                                            VerticalAlignment="Center"
+                                           CornerRadius="8"
                                            Command="{Binding DataContext.DeleteEncounterCommand,
                                                      RelativeSource={RelativeSource AncestorType=Page}}"
                                            CommandParameter="{Binding}"/>
                             </Grid>
-                        </ui:CardAction>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

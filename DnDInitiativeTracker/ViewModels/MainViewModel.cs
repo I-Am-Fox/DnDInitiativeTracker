@@ -14,7 +14,7 @@ public sealed partial class MainViewModel : ObservableObject
 {
     private readonly ICampaignRepository _campaignRepository;
     private readonly ISnackbarService _snackbar;
-    private readonly INavigationService _navigation;
+    private ShellViewModel? _shell;
 
     [ObservableProperty]
     private Campaign? _selectedCampaign;
@@ -33,13 +33,16 @@ public sealed partial class MainViewModel : ObservableObject
 
     public ObservableCollection<Campaign> Campaigns { get; } = new();
 
-    public MainViewModel(ICampaignRepository campaignRepository, ISnackbarService snackbar,
-        INavigationService navigation)
+    public MainViewModel(ICampaignRepository campaignRepository, ISnackbarService snackbar)
     {
         _campaignRepository = campaignRepository;
         _snackbar = snackbar;
-        _navigation = navigation;
     }
+
+    /// <summary>
+    /// Called after DI construction to wire up the shell reference (avoids circular DI).
+    /// </summary>
+    public void SetShell(ShellViewModel shell) => _shell = shell;
 
     public async Task InitializeAsync()
     {
@@ -53,7 +56,7 @@ public sealed partial class MainViewModel : ObservableObject
     private void SelectCampaign(Campaign campaign)
     {
         SelectedCampaign = campaign;
-        _navigation.Navigate(typeof(CampaignDetailPage));
+        _shell?.NavigateTo<CampaignDetailPage>();
     }
 
     [RelayCommand]

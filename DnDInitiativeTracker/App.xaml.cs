@@ -9,9 +9,7 @@ using DnDInitiativeTracker.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Velopack;
 using Wpf.Ui;
-using Wpf.Ui.Abstractions;
 using Wpf.Ui.Appearance;
-using Wpf.Ui.DependencyInjection;
 
 namespace DnDInitiativeTracker;
 
@@ -26,8 +24,6 @@ public partial class App : Application
         var collection = new ServiceCollection();
 
         // Determine the data root: a "Data" folder next to the exe.
-        // Under Velopack the app root is the install directory;
-        // in development it's just the build output directory.
         var appDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
                      ?? AppContext.BaseDirectory;
         var dataRoot = Path.Combine(appDir, "Data");
@@ -51,10 +47,8 @@ public partial class App : Application
         collection.AddSingleton(_ => new Velopack.UpdateManager(
             new Velopack.Sources.GithubSource("https://github.com/I-Am-Fox/DnDInitiativeTracker", null, false)));
 
-        // WPF-UI services
+        // WPF-UI services (snackbar only — we handle navigation ourselves)
         collection.AddSingleton<ISnackbarService, SnackbarService>();
-        collection.AddSingleton<INavigationService, NavigationService>();
-        collection.AddNavigationViewPageProvider();
 
         // ViewModels
         collection.AddSingleton<MainWindowViewModel>();
@@ -62,13 +56,15 @@ public partial class App : Application
         collection.AddSingleton<MainViewModel>();
         collection.AddSingleton<EncounterViewModel>();
         collection.AddSingleton<CampaignDetailViewModel>();
+        collection.AddSingleton<SettingsViewModel>();
         collection.AddSingleton<ShellViewModel>();
 
-        // Pages (transient so NavigationView creates fresh instances)
+        // Pages (transient so fresh instances are created on navigation)
         collection.AddTransient<CampaignsPage>();
         collection.AddTransient<CampaignDetailPage>();
         collection.AddTransient<EncountersPage>();
         collection.AddTransient<InitiativePage>();
+        collection.AddTransient<SettingsPage>();
 
         // Window
         collection.AddSingleton<MainWindow>();
@@ -82,8 +78,11 @@ public partial class App : Application
         var mainVm = _services.GetRequiredService<MainViewModel>();
         await mainVm.InitializeAsync();
 
-        // Resolve ShellViewModel so it wires up property-change coordination
-        _services.GetRequiredService<ShellViewModel>();
+        // Resolve ShellViewModel and wire up cross-references
+        var shell = _services.GetRequiredService<ShellViewModel>();
+        mainVm.SetShell(shell);
+        var encounterVm = _services.GetRequiredService<EncounterViewModel>();
+        encounterVm.SetShell(shell);
 
         var window = _services.GetRequiredService<MainWindow>();
         window.Show();
