@@ -27,8 +27,6 @@ public sealed partial class CampaignDetailViewModel : ObservableObject
     [ObservableProperty]
     private string _newCharacterName = string.Empty;
 
-    [ObservableProperty]
-    private string _newCharacterDexMod = "0";
 
     [ObservableProperty]
     private string? _errorMessage;
@@ -60,7 +58,6 @@ public sealed partial class CampaignDetailViewModel : ObservableObject
     private void BeginAddCharacter()
     {
         NewCharacterName = string.Empty;
-        NewCharacterDexMod = "0";
         ErrorMessage = null;
         IsAddingCharacter = true;
     }
@@ -81,17 +78,10 @@ public sealed partial class CampaignDetailViewModel : ObservableObject
             return;
         }
 
-        if (!int.TryParse(NewCharacterDexMod, out var dexMod))
-        {
-            ErrorMessage = "DEX modifier must be a whole number.";
-            return;
-        }
-
         var character = new CharacterProfile
         {
             Id = Guid.NewGuid().ToString("N"),
-            Name = NewCharacterName.Trim(),
-            DexterityModifier = dexMod
+            Name = NewCharacterName.Trim()
         };
 
         Characters.Add(character);

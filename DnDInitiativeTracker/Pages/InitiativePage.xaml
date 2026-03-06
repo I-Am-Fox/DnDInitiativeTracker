@@ -250,6 +250,12 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+
+                <StackPanel Margin="0,0,0,10">
+                    <TextBlock Text="INITIATIVE" Style="{StaticResource FieldLabel}"/>
+                    <ui:TextBox Text="{Binding NewCreatureInitiative, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="0" MaxWidth="110" HorizontalAlignment="Left"/>
+                </StackPanel>
                 <TextBlock Text="{Binding ErrorMessage}"
                            Foreground="{DynamicResource SystemFillColorCriticalBrush}"
                            FontSize="11" Margin="0,0,0,8"
@@ -298,11 +304,6 @@
 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"/>
-                                    <TextBlock FontSize="11"
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}">
-                                        <Run Text="DEX "/>
-                                        <Run Text="{Binding DexterityModifier, StringFormat={}{0:+#;-#;+0}, Mode=OneWay}"/>
-                                    </TextBlock>
                                 </StackPanel>
 
                                 <TextBlock Grid.Column="2" Text="Initiative"

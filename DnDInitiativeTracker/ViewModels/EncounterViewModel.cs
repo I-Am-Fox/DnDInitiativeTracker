@@ -44,6 +44,9 @@ public sealed partial class EncounterViewModel : ObservableObject
     private CreatureTemplate? _selectedCreatureTemplate;
 
     [ObservableProperty]
+    private string _newCreatureInitiative = "0";
+
+    [ObservableProperty]
     private bool _isSearching;
 
     [ObservableProperty]
@@ -251,6 +254,7 @@ public sealed partial class EncounterViewModel : ObservableObject
         CreatureSearchQuery = string.Empty;
         SearchResults.Clear();
         SelectedCreatureTemplate = null;
+        NewCreatureInitiative = "0";
         ErrorMessage = null;
         IsImportingCreature = true;
     }
@@ -291,6 +295,12 @@ public sealed partial class EncounterViewModel : ObservableObject
     {
         if (SelectedEncounter is null || SelectedCreatureTemplate is null) return;
 
+        if (!int.TryParse(NewCreatureInitiative, out var initiative))
+        {
+            ErrorMessage = "Initiative must be a whole number.";
+            return;
+        }
+
         IsSearching = true;
         ErrorMessage = null;
 
@@ -303,7 +313,7 @@ public sealed partial class EncounterViewModel : ObservableObject
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Name = detail.Name,
-                InitiativeRoll = 0,
+                InitiativeRoll = initiative,
                 DisplayOrder = Combatants.Count,
                 IsPlayerCharacter = false,
                 MaxHitPoints = detail.HitPoints ?? 0,

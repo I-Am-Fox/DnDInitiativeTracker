@@ -51,25 +51,12 @@
                                Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
                                Margin="0,0,0,12"/>
 
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="12"/>
-                            <ColumnDefinition Width="110"/>
-                        </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock Text="CHARACTER NAME" Style="{StaticResource FieldLabel}"/>
+                        <ui:TextBox Text="{Binding NewCharacterName, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="e.g. Gandalf"/>
+                    </StackPanel>
 
-                        <StackPanel Grid.Column="0">
-                            <TextBlock Text="CHARACTER NAME" Style="{StaticResource FieldLabel}"/>
-                            <ui:TextBox Text="{Binding NewCharacterName, UpdateSourceTrigger=PropertyChanged}"
-                                        PlaceholderText="e.g. Gandalf"/>
-                        </StackPanel>
-
-                        <StackPanel Grid.Column="2">
-                            <TextBlock Text="DEX MOD" Style="{StaticResource FieldLabel}"/>
-                            <ui:TextBox Text="{Binding NewCharacterDexMod, UpdateSourceTrigger=PropertyChanged}"
-                                        PlaceholderText="0"/>
-                        </StackPanel>
-                    </Grid>
 
                     <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="{DynamicResource SystemFillColorCriticalBrush}"
@@ -97,7 +84,6 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
                                 <!-- Icon -->
@@ -114,23 +100,8 @@
                                            FontWeight="SemiBold" FontSize="14"
                                            VerticalAlignment="Center"/>
 
-                                <!-- DEX mod -->
-                                <StackPanel Grid.Column="2" Orientation="Horizontal"
-                                            VerticalAlignment="Center" Margin="0,0,12,0">
-                                    <TextBlock Text="DEX "
-                                               FontSize="11"
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                               VerticalAlignment="Center"/>
-                                    <TextBlock FontSize="11" FontWeight="SemiBold"
-                                               VerticalAlignment="Center">
-                                        <TextBlock.Text>
-                                            <Binding Path="DexterityModifier" StringFormat="{}{0:+#;-#;+0}" Mode="OneWay"/>
-                                        </TextBlock.Text>
-                                    </TextBlock>
-                                </StackPanel>
-
                                 <!-- Delete button -->
-                                <ui:Button Grid.Column="3"
+                                <ui:Button Grid.Column="2"
                                            Icon="{ui:SymbolIcon Delete24}"
                                            Appearance="Danger"
                                            Padding="6"

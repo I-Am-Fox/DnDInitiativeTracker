@@ -40,3 +40,4 @@ C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Deb
 C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Debug\net8.0-windows\Pages\CampaignDetailPage.g.cs
 C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\bin\Debug\net8.0-windows\NuGet.Versioning.dll
 C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\bin\Debug\net8.0-windows\Velopack.dll
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Debug\net8.0-windows\DnDInitiativeTracker.sourcelink.json

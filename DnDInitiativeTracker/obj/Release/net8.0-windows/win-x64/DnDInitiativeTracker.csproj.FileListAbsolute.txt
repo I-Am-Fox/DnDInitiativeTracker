@@ -499,3 +499,4 @@ C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Rel
 C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Release\net8.0-windows\win-x64\DnDInitiativeTracker.pdb
 C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Release\net8.0-windows\win-x64\DnDInitiativeTracker.genruntimeconfig.cache
 C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Release\net8.0-windows\win-x64\ref\DnDInitiativeTracker.dll
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker\obj\Release\net8.0-windows\win-x64\DnDInitiativeTracker.sourcelink.json

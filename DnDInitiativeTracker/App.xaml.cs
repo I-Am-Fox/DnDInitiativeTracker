@@ -47,6 +47,10 @@ public partial class App : Application
         });
         collection.AddSingleton<ICreatureCatalogService, FiveBitsCreatureCatalogService>();
 
+        // Velopack update manager (checks GitHub Releases)
+        collection.AddSingleton(_ => new Velopack.UpdateManager(
+            new Velopack.Sources.GithubSource("https://github.com/I-Am-Fox/DnDInitiativeTracker", null, false)));
+
         // WPF-UI services
         collection.AddSingleton<ISnackbarService, SnackbarService>();
         collection.AddSingleton<INavigationService, NavigationService>();
@@ -54,6 +58,7 @@ public partial class App : Application
 
         // ViewModels
         collection.AddSingleton<MainWindowViewModel>();
+        collection.AddSingleton<UpdateViewModel>();
         collection.AddSingleton<MainViewModel>();
         collection.AddSingleton<EncounterViewModel>();
         collection.AddSingleton<CampaignDetailViewModel>();
@@ -82,6 +87,10 @@ public partial class App : Application
 
         var window = _services.GetRequiredService<MainWindow>();
         window.Show();
+
+        // Check for updates in the background (fire-and-forget, non-blocking)
+        var updateVm = _services.GetRequiredService<UpdateViewModel>();
+        _ = updateVm.CheckForUpdatesAsync();
     }
 
     protected override void OnExit(ExitEventArgs e)

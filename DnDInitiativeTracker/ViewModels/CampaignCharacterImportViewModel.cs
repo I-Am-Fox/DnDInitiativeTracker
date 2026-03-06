@@ -12,7 +12,6 @@ public sealed partial class CampaignCharacterImportViewModel : ObservableObject
     public CharacterProfile Character { get; }
 
     public string Name => Character.Name;
-    public int DexterityModifier => Character.DexterityModifier;
 
     [ObservableProperty]
     private bool _isSelected = true;
