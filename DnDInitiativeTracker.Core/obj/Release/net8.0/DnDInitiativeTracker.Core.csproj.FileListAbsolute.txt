@@ -1,0 +1,11 @@
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\bin\Release\net8.0\DnDInitiativeTracker.Core.deps.json
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\bin\Release\net8.0\DnDInitiativeTracker.Core.dll
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\bin\Release\net8.0\DnDInitiativeTracker.Core.pdb
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\DnDInitiativeTracker.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\DnDInitiativeTracker.Core.AssemblyInfoInputs.cache
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\DnDInitiativeTracker.Core.AssemblyInfo.cs
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\DnDInitiativeTracker.Core.csproj.CoreCompileInputs.cache
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\DnDInitiativeTracker.Core.dll
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\refint\DnDInitiativeTracker.Core.dll
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\DnDInitiativeTracker.Core.pdb
+C:\Users\josh-\RiderProjects\DnD Initiative Tracker\DnDInitiativeTracker.Core\obj\Release\net8.0\ref\DnDInitiativeTracker.Core.dll

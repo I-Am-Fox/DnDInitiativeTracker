@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>DnDInitiativeTracker</RootNamespace>
+    <AssemblyName>DnDInitiativeTracker</AssemblyName>
+    <Version>1.0.0</Version>
+    <StartupObject>DnDInitiativeTracker.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Velopack" Version="0.0.1298" />
+    <PackageReference Include="WPF-UI" Version="4.0.3" />
+    <PackageReference Include="wpf-ui.dependencyinjection" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DnDInitiativeTracker.Core\DnDInitiativeTracker.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Reference-only files from another project — exclude from compilation -->
+  <ItemGroup>
+    <Compile Remove="EvaluationViewModel.cs" />
+    <Compile Remove="Windows\**" />
+    <Page Remove="Windows\**" />
+  </ItemGroup>
+
+</Project>
+

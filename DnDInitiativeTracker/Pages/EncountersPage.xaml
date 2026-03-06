@@ -1,0 +1,111 @@
+<Page x:Class="DnDInitiativeTracker.Pages.EncountersPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Encounters"
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      Background="{DynamicResource ApplicationBackgroundBrush}">
+
+    <Page.Resources>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="10.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}"/>
+            <Setter Property="Margin"     Value="0,0,0,3"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,20,24,24" MaxWidth="520" HorizontalAlignment="Left">
+
+            <!-- Header -->
+            <TextBlock Text="Encounters"
+                       FontSize="28" FontWeight="Bold"
+                       Margin="0,0,0,4"/>
+            <TextBlock Text="{Binding SelectedCampaignName}"
+                       FontSize="13"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Margin="0,0,0,4"/>
+            <TextBlock Text="Select a campaign first to manage encounters."
+                       FontSize="12"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                       Margin="0,0,0,20"
+                       Visibility="{Binding HasNoCampaign, Converter={StaticResource BoolToVisibility}}"/>
+
+            <!-- New encounter button -->
+            <ui:Button Content="New Encounter"
+                       Icon="{ui:SymbolIcon Add24}"
+                       Command="{Binding BeginCreateEncounterCommand}"
+                       Appearance="Primary"
+                       Margin="0,0,0,16"
+                       IsEnabled="{Binding HasCampaign}"/>
+
+            <!-- New encounter form -->
+            <ui:Card Margin="0,0,0,16"
+                     Visibility="{Binding IsCreatingEncounter, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="NEW ENCOUNTER" FontSize="11" FontWeight="Bold"
+                               Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+                               Margin="0,0,0,12"/>
+
+                    <TextBlock Text="ENCOUNTER NAME" Style="{StaticResource FieldLabel}"/>
+                    <ui:TextBox Text="{Binding NewEncounterName, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="e.g. Goblin Ambush"
+                                Margin="0,0,0,10"/>
+
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                               FontSize="11" Margin="0,0,0,8"
+                               Visibility="{Binding ErrorMessage, Converter={StaticResource NotNullOrEmptyToVisibility}}"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <ui:Button Content="Create"
+                                   Appearance="Primary"
+                                   Command="{Binding ConfirmCreateEncounterCommand}"
+                                   Margin="0,0,8,0"/>
+                        <ui:Button Content="Cancel"
+                                   Command="{Binding CancelCreateEncounterCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ui:Card>
+
+            <!-- Encounter list -->
+            <ItemsControl ItemsSource="{Binding Encounters}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:CardAction Margin="0,0,0,8"
+                                       Command="{Binding DataContext.SelectEncounterCommand,
+                                                 RelativeSource={RelativeSource AncestorType=Page}}"
+                                       CommandParameter="{Binding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <ui:SymbolIcon Symbol="Flash24"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   Margin="0,0,10,0"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <ui:Button Grid.Column="1"
+                                           Icon="{ui:SymbolIcon Delete24}"
+                                           Appearance="Danger"
+                                           ToolTip="Delete encounter"
+                                           VerticalAlignment="Center"
+                                           Command="{Binding DataContext.DeleteEncounterCommand,
+                                                     RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}"/>
+                            </Grid>
+                        </ui:CardAction>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
+

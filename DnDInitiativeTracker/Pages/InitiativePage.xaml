@@ -1,0 +1,339 @@
+<Page x:Class="DnDInitiativeTracker.Pages.InitiativePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:vm="clr-namespace:DnDInitiativeTracker.ViewModels"
+      Title="Initiative"
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      Background="{DynamicResource ApplicationBackgroundBrush}">
+
+    <Page.Resources>
+        <Style x:Key="StatLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}"/>
+        </Style>
+        <Style x:Key="StatValue" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="10.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}"/>
+            <Setter Property="Margin"     Value="0,0,0,3"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header + toolbar -->
+        <Grid Grid.Row="0" Margin="24,20,24,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Initiative Order" FontSize="28" FontWeight="Bold"/>
+                <TextBlock Text="{Binding EncounterName}"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           Margin="0,2,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:Button Content="Sort"
+                           Icon="{ui:SymbolIcon ArrowSort24}"
+                           Command="{Binding AutoSortCombatantsCommand}"
+                           Margin="0,0,8,0"/>
+                <ui:Button Content="Add Combatant"
+                           Icon="{ui:SymbolIcon PersonAdd24}"
+                           Appearance="Primary"
+                           Command="{Binding BeginAddCombatantCommand}"
+                           Margin="0,0,8,0"/>
+                <ui:Button Content="Import Creature"
+                           Icon="{ui:SymbolIcon ArrowDownload24}"
+                           Command="{Binding BeginImportCreatureCommand}"
+                           Margin="0,0,8,0"/>
+                <ui:Button Content="Import from Campaign"
+                           Icon="{ui:SymbolIcon People24}"
+                           Command="{Binding BeginImportFromCampaignCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Combatant list -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="24,12,24,0">
+            <ListBox x:Name="CombatantListBox"
+                     ItemsSource="{Binding Combatants}"
+                     AllowDrop="True"
+                     PreviewMouseMove="CombatantList_PreviewMouseMove"
+                     Drop="CombatantList_Drop"
+                     Background="Transparent" BorderThickness="0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding"  Value="0"/>
+                        <Setter Property="Margin"   Value="0,0,0,8"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:CombatantViewModel}">
+                        <ui:Card Padding="14,10" Cursor="SizeAll">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="44"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="44"/>
+                                    <ColumnDefinition Width="36"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Initiative badge -->
+                                <Border Grid.Column="0"
+                                        Width="36" Height="36" CornerRadius="8"
+                                        VerticalAlignment="Center">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#C8973A" Offset="0"/>
+                                            <GradientStop Color="#9B6E22" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <TextBlock Text="{Binding InitiativeRoll}"
+                                               FontWeight="Bold" FontSize="14"
+                                               Foreground="#1A1A1A"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+
+                                <!-- PC/NPC type dot -->
+                                <Ellipse Grid.Column="1"
+                                         Width="10" Height="10"
+                                         HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="{DynamicResource SystemFillColorCriticalBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPlayerCharacter}" Value="True">
+                                                    <Setter Property="Fill" Value="{DynamicResource SystemFillColorSuccessBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+
+                                <!-- Name + HP / AC -->
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="10,0">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                        <TextBlock Text="HP " Style="{StaticResource StatLabel}"/>
+                                        <TextBlock Style="{StaticResource StatValue}">
+                                            <Run Text="{Binding CurrentHitPoints}"/>
+                                            <Run Text="/" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                            <Run Text="{Binding MaxHitPoints, Mode=OneWay}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="  ·  " Style="{StaticResource StatLabel}"/>
+                                        <TextBlock Text="AC " Style="{StaticResource StatLabel}"/>
+                                        <TextBlock Text="{Binding ArmorClass}" Style="{StaticResource StatValue}"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Image thumbnail -->
+                                <Border Grid.Column="3"
+                                        Width="36" Height="36" CornerRadius="6"
+                                        VerticalAlignment="Center" ClipToBounds="True"
+                                        Visibility="{Binding ImageUrl, Converter={StaticResource BoolToVisibility}}">
+                                    <Image Stretch="UniformToFill"
+                                           Source="{Binding ImageUrl}"/>
+                                </Border>
+
+                                <!-- Remove button -->
+                                <ui:Button Grid.Column="4"
+                                           Icon="{ui:SymbolIcon Dismiss24}"
+                                           Appearance="Danger"
+                                           Padding="6"
+                                           VerticalAlignment="Center"
+                                           Command="{Binding DataContext.RemoveCombatantCommand,
+                                                     RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}"/>
+                            </Grid>
+                        </ui:Card>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+
+        <!-- Add combatant form -->
+        <ui:Card Grid.Row="2" Margin="24,10,24,0"
+                 Visibility="{Binding IsAddingCombatant, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel>
+                <TextBlock Text="ADD COMBATANT" FontSize="11" FontWeight="Bold"
+                           Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+                           Margin="0,0,0,12"/>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="110"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="NAME" Style="{StaticResource FieldLabel}"/>
+                        <ui:TextBox Text="{Binding NewCombatantName, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="Combatant name"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="INITIATIVE" Style="{StaticResource FieldLabel}"/>
+                        <ui:TextBox Text="{Binding NewCombatantInitiative, UpdateSourceTrigger=PropertyChanged}"
+                                    PlaceholderText="0"/>
+                    </StackPanel>
+                </Grid>
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                           FontSize="11" Margin="0,0,0,8"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource NotNullOrEmptyToVisibility}}"/>
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button Content="Add"
+                               Appearance="Primary"
+                               Command="{Binding ConfirmAddCombatantCommand}"
+                               Margin="0,0,8,0"/>
+                    <ui:Button Content="Cancel"
+                               Command="{Binding CancelAddCombatantCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </ui:Card>
+
+        <!-- Import creature panel -->
+        <ui:Card Grid.Row="3" Margin="24,10,24,16"
+                 Visibility="{Binding IsImportingCreature, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel>
+                <TextBlock Text="IMPORT FROM 5E API" FontSize="11" FontWeight="Bold"
+                           Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+                           Margin="0,0,0,12"/>
+                <TextBlock Text="SEARCH" Style="{StaticResource FieldLabel}"/>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ui:TextBox Grid.Column="0"
+                                Text="{Binding CreatureSearchQuery, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="e.g. Goblin"/>
+                    <ui:Button Grid.Column="2"
+                               Content="Search"
+                               Icon="{ui:SymbolIcon Search24}"
+                               Appearance="Primary"
+                               Command="{Binding SearchCreaturesCommand}"/>
+                </Grid>
+                <TextBlock Text="RESULTS" Style="{StaticResource FieldLabel}"/>
+                <ListBox ItemsSource="{Binding SearchResults}"
+                         SelectedItem="{Binding SelectedCreatureTemplate, Mode=TwoWay}"
+                         MaxHeight="140" Margin="0,0,0,10"
+                         Background="{DynamicResource ControlFillColorDefaultBrush}"
+                         BorderThickness="1"
+                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" Padding="6,4" FontSize="13"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                           FontSize="11" Margin="0,0,0,8"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource NotNullOrEmptyToVisibility}}"/>
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button Content="Import Selected"
+                               Appearance="Primary"
+                               Command="{Binding ConfirmImportCreatureCommand}"
+                               Margin="0,0,8,0"
+                               IsEnabled="{Binding SelectedCreatureTemplate,
+                                           Converter={StaticResource BoolToVisibility}}"/>
+                    <ui:Button Content="Cancel"
+                               Command="{Binding CancelImportCreatureCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </ui:Card>
+
+        <!-- Import from Campaign panel -->
+        <ui:Card Grid.Row="4" Margin="24,10,24,16"
+                 Visibility="{Binding IsImportingFromCampaign, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel>
+                <TextBlock Text="IMPORT FROM CAMPAIGN" FontSize="11" FontWeight="Bold"
+                           Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+                           Margin="0,0,0,12"/>
+
+                <TextBlock Text="Select characters and set their initiative rolls."
+                           FontSize="12"
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           Margin="0,0,0,12"/>
+
+                <ItemsControl ItemsSource="{Binding CampaignCharacters}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="80"/>
+                                </Grid.ColumnDefinitions>
+
+                                <CheckBox Grid.Column="0"
+                                          IsChecked="{Binding IsSelected}"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,8,0"/>
+
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13"/>
+                                    <TextBlock FontSize="11"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                                        <Run Text="DEX "/>
+                                        <Run Text="{Binding DexterityModifier, StringFormat={}{0:+#;-#;+0}, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="2" Text="Initiative"
+                                           FontSize="10.5" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,6,0"/>
+
+                                <ui:TextBox Grid.Column="3"
+                                            Text="{Binding InitiativeText, UpdateSourceTrigger=PropertyChanged}"
+                                            PlaceholderText="0"
+                                            VerticalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                           FontSize="11" Margin="0,0,0,8"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource NotNullOrEmptyToVisibility}}"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                    <ui:Button Content="Import Selected"
+                               Appearance="Primary"
+                               Command="{Binding ConfirmImportFromCampaignCommand}"
+                               Margin="0,0,8,0"/>
+                    <ui:Button Content="Cancel"
+                               Command="{Binding CancelImportFromCampaignCommand}"/>
+                </StackPanel>
+            </StackPanel>
+        </ui:Card>
+    </Grid>
+</Page>
+

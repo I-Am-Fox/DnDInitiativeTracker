@@ -1,0 +1,73 @@
+<ui:FluentWindow x:Class="GalaxyClassifierCapstone.Windows.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:pages="clr-namespace:GalaxyClassifierCapstone.Pages"
+                 Title="Galaxy Classification System"
+                 Height="700"
+                 Width="920"
+                 WindowStartupLocation="CenterScreen"
+                 ResizeMode="CanMinimize"
+                 Background="{DynamicResource ApplicationBackgroundBrush}"
+                 ExtendsContentIntoTitleBar="False"
+                 WindowCornerPreference="Round"
+                 Icon="/Assets/galaxy-icon.ico">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar
+            Title="Galaxy Classifier Capstone"
+            Grid.Row="0" />
+
+        <!-- Main navigation -->
+        <ui:NavigationView Grid.Row="1" x:Name="RootNavigationView" IsPaneOpen="False" PaneDisplayMode="LeftMinimal">
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="Identification"
+                                       TargetPageType="{x:Type pages:IdentificationPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="ZoomFit24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Training"
+                                       TargetPageType="{x:Type pages:TrainingPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Server24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Runs"
+                                       TargetPageType="{x:Type pages:RunsPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="History24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Logging"
+                                       TargetPageType="{x:Type pages:LoggingPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Document24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem Content="Evaluation"
+                                       TargetPageType="{x:Type pages:EvaluationPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Clipboard24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.MenuItems>
+        </ui:NavigationView>
+
+        <ui:SnackbarPresenter Grid.Row="1" x:Name="SnackbarPresenter"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Bottom"
+                              Margin="16"
+                              MaxWidth="400" />
+    </Grid>
+
+</ui:FluentWindow>

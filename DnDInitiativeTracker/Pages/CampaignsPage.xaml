@@ -1,0 +1,111 @@
+<Page x:Class="DnDInitiativeTracker.Pages.CampaignsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:vm="clr-namespace:DnDInitiativeTracker.ViewModels"
+      Title="Campaigns"
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      Background="{DynamicResource ApplicationBackgroundBrush}">
+
+    <Page.Resources>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize"   Value="10.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}"/>
+            <Setter Property="Margin"     Value="0,0,0,3"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,20,24,24" MaxWidth="520" HorizontalAlignment="Left">
+
+            <!-- Header -->
+            <TextBlock Text="Campaigns"
+                       FontSize="28" FontWeight="Bold"
+                       Margin="0,0,0,4"/>
+            <TextBlock Text="Select or create a campaign to get started."
+                       FontSize="13"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Margin="0,0,0,20"/>
+
+            <!-- New campaign button -->
+            <ui:Button Content="New Campaign"
+                       Icon="{ui:SymbolIcon Add24}"
+                       Command="{Binding BeginCreateCampaignCommand}"
+                       Appearance="Primary"
+                       Margin="0,0,0,16"/>
+
+            <!-- New campaign form -->
+            <ui:Card Margin="0,0,0,16"
+                     Visibility="{Binding IsCreatingCampaign, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="NEW CAMPAIGN" FontSize="11" FontWeight="Bold"
+                               Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+                               Margin="0,0,0,12"/>
+
+                    <TextBlock Text="CAMPAIGN NAME" Style="{StaticResource FieldLabel}"/>
+                    <ui:TextBox Text="{Binding NewCampaignName, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="e.g. The Lost Mine"
+                                Margin="0,0,0,10"/>
+
+                    <TextBlock Text="DESCRIPTION (OPTIONAL)" Style="{StaticResource FieldLabel}"/>
+                    <ui:TextBox Text="{Binding NewCampaignDescription, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="A short description…"
+                                Margin="0,0,0,10"/>
+
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                               FontSize="11" Margin="0,0,0,8"
+                               Visibility="{Binding ErrorMessage, Converter={StaticResource NotNullOrEmptyToVisibility}}"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <ui:Button Content="Create"
+                                   Appearance="Primary"
+                                   Command="{Binding ConfirmCreateCampaignCommand}"
+                                   Margin="0,0,8,0"/>
+                        <ui:Button Content="Cancel"
+                                   Command="{Binding CancelCreateCampaignCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ui:Card>
+
+            <!-- Campaign list -->
+            <ItemsControl ItemsSource="{Binding Campaigns}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:CardAction Margin="0,0,0,8"
+                                       Command="{Binding DataContext.SelectCampaignCommand,
+                                                 RelativeSource={RelativeSource AncestorType=Page}}"
+                                       CommandParameter="{Binding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
+                                    <TextBlock Text="{Binding Description}"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               FontSize="12" TextTrimming="CharacterEllipsis"
+                                               Margin="0,3,0,0"/>
+                                </StackPanel>
+
+                                <ui:Button Grid.Column="1"
+                                           Icon="{ui:SymbolIcon Delete24}"
+                                           Appearance="Danger"
+                                           ToolTip="Delete campaign"
+                                           VerticalAlignment="Center"
+                                           Command="{Binding DataContext.DeleteCampaignCommand,
+                                                     RelativeSource={RelativeSource AncestorType=Page}}"
+                                           CommandParameter="{Binding}"/>
+                            </Grid>
+                        </ui:CardAction>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
+
