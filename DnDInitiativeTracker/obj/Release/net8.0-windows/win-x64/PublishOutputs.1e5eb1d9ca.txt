@@ -1,8 +1,0 @@
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\DnDInitiativeTracker.pdb
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\D3DCompiler_47_cor3.dll
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\PenImc_cor3.dll
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\PresentationNative_cor3.dll
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\vcruntime140_cor3.dll
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\wpfgfx_cor3.dll
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\DnDInitiativeTracker.Core.pdb
-C:\Users\josh-\RiderProjects\DnD Initiative Tracker\publish\DnDInitiativeTracker.exe
