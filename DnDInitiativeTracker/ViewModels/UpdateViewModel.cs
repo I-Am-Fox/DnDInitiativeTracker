@@ -1,18 +1,24 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Velopack;
+using DnDInitiativeTracker.Core.Interfaces.Services;
+using DnDInitiativeTracker.Core.Models;
+using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace DnDInitiativeTracker.ViewModels;
 
 public sealed partial class UpdateViewModel : ObservableObject
 {
-    private readonly UpdateManager _updateManager;
+    private readonly IUpdateService _updateService;
+    private readonly ISnackbarService _snackbar;
+    private UpdateInfo? _pendingUpdate;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsVisible))]
     private string _statusText = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanApply))]
     private bool _isCheckingOrDownloading;
 
     [ObservableProperty]
@@ -24,15 +30,13 @@ public sealed partial class UpdateViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsVisible))]
     private bool _hasError;
 
-    [ObservableProperty]
-    private int _downloadProgress;
-
     public bool IsVisible => !string.IsNullOrEmpty(StatusText);
     public bool CanApply => UpdateReady && !IsCheckingOrDownloading;
 
-    public UpdateViewModel(UpdateManager updateManager)
+    public UpdateViewModel(IUpdateService updateService, ISnackbarService snackbar)
     {
-        _updateManager = updateManager;
+        _updateService = updateService;
+        _snackbar = snackbar;
     }
 
     [RelayCommand]
@@ -47,7 +51,7 @@ public sealed partial class UpdateViewModel : ObservableObject
             UpdateReady = false;
             StatusText = "Checking for updates…";
 
-            var updateInfo = await _updateManager.CheckForUpdatesAsync();
+            var updateInfo = await _updateService.CheckForUpdatesAsync();
             if (updateInfo is null)
             {
                 StatusText = "You're up to date.";
@@ -56,15 +60,16 @@ public sealed partial class UpdateViewModel : ObservableObject
                 return;
             }
 
-            StatusText = $"Downloading update v{updateInfo.TargetFullRelease.Version}…";
-            DownloadProgress = 0;
-
-            await _updateManager.DownloadUpdatesAsync(
-                updateInfo,
-                progress => DownloadProgress = progress);
-
+            _pendingUpdate = updateInfo;
             UpdateReady = true;
-            StatusText = $"Update v{updateInfo.TargetFullRelease.Version} ready — click Restart to apply.";
+            StatusText = $"Update v{updateInfo.Version} ready — click Restart to apply.";
+
+            _snackbar.Show(
+                "Update Available",
+                $"Version {updateInfo.Version} is available. Check Settings to update.",
+                ControlAppearance.Info,
+                new SymbolIcon(SymbolRegular.ArrowSync24),
+                TimeSpan.FromSeconds(5));
         }
         catch (Exception ex)
         {
@@ -78,10 +83,26 @@ public sealed partial class UpdateViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ApplyUpdate()
+    private async Task ApplyUpdateAsync()
     {
-        if (!UpdateReady) return;
-        _updateManager.ApplyUpdatesAndRestart(null);
+        if (!UpdateReady || _pendingUpdate is null) return;
+
+        try
+        {
+            IsCheckingOrDownloading = true;
+            StatusText = "Downloading and applying update…";
+
+            await _updateService.DownloadAndInstallUpdateAsync(_pendingUpdate);
+        }
+        catch (Exception ex)
+        {
+            HasError = true;
+            StatusText = $"Update failed: {ex.Message}";
+        }
+        finally
+        {
+            IsCheckingOrDownloading = false;
+        }
     }
 
     [RelayCommand]
@@ -90,6 +111,7 @@ public sealed partial class UpdateViewModel : ObservableObject
         StatusText = string.Empty;
         HasError = false;
         UpdateReady = false;
+        _pendingUpdate = null;
     }
 }
 

@@ -1,6 +1,6 @@
 using DnDInitiativeTracker.Core.Models;
 
-namespace DnDInitiativeTracker.Core.Services;
+namespace DnDInitiativeTracker.Core.Interfaces.Services;
 
 public interface IInitiativeOrderingService
 {

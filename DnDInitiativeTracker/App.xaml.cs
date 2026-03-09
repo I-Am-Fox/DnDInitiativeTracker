@@ -1,12 +1,15 @@
-﻿using System.IO;
-using System.Net.Http;
-using System.Reflection;
-using System.Windows;
+﻿using DnDInitiativeTracker.Core.Interfaces.Repositories;
+using DnDInitiativeTracker.Core.Interfaces.Services;
 using DnDInitiativeTracker.Core.Repositories;
 using DnDInitiativeTracker.Core.Services;
 using DnDInitiativeTracker.Pages;
 using DnDInitiativeTracker.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using System.Data;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Windows;
 using Velopack;
 using Wpf.Ui;
 using Wpf.Ui.Appearance;
@@ -15,61 +18,80 @@ namespace DnDInitiativeTracker;
 
 public partial class App : Application
 {
-    private ServiceProvider? _services;
+    private readonly ServiceProvider? _services;
 
-    protected override async void OnStartup(StartupEventArgs e)
+    public IServiceProvider Services => _services;
+
+    [STAThread]
+    private static void Main(string[] args)
     {
-        base.OnStartup(e);
+        VelopackApp.Build().Run();
 
-        var collection = new ServiceCollection();
+        App app = new();
+        app.InitializeComponent();
+        app.Run();
+    }
 
+    public App()
+    {
+        var services = new ServiceCollection();
+        ConfigureServices(services);
+        _services = services.BuildServiceProvider();
+    }
+
+    private void ConfigureServices(IServiceCollection services)
+    {
         // Determine the data root: a "Data" folder next to the exe.
         var appDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
                      ?? AppContext.BaseDirectory;
+
         var dataRoot = Path.Combine(appDir, "Data");
+
         Directory.CreateDirectory(dataRoot);
 
         // Repositories
-        collection.AddSingleton<ICampaignRepository>(_ => new JsonCampaignRepository(dataRoot));
-        collection.AddSingleton<IEncounterRepository>(_ => new JsonEncounterRepository(dataRoot));
-        collection.AddSingleton<ICharacterRepository>(_ => new JsonCharacterRepository(dataRoot));
+        services.AddSingleton<ICampaignRepository>(_ => new JsonCampaignRepository(dataRoot));
+        services.AddSingleton<IEncounterRepository>(_ => new JsonEncounterRepository(dataRoot));
+        services.AddSingleton<ICharacterRepository>(_ => new JsonCharacterRepository(dataRoot));
 
         // Services
-        collection.AddSingleton<IInitiativeOrderingService, InitiativeOrderingService>();
-        collection.AddSingleton(_ =>
+        services.AddSingleton<IInitiativeOrderingService, InitiativeOrderingService>();
+        services.AddSingleton(_ =>
         {
             var client = new HttpClient { BaseAddress = new Uri("https://www.dnd5eapi.co") };
             return client;
         });
-        collection.AddSingleton<ICreatureCatalogService, FiveBitsCreatureCatalogService>();
+        services.AddSingleton<ICreatureCatalogService, FiveBitsCreatureCatalogService>();
 
         // Velopack update manager (checks GitHub Releases)
-        collection.AddSingleton(_ => new Velopack.UpdateManager(
-            new Velopack.Sources.GithubSource("https://github.com/I-Am-Fox/DnDInitiativeTracker", null, false)));
+        services.AddSingleton<IUpdateService, VelopackUpdateService>();
 
         // WPF-UI services (snackbar only — we handle navigation ourselves)
-        collection.AddSingleton<ISnackbarService, SnackbarService>();
+        services.AddSingleton<ISnackbarService, SnackbarService>();
 
         // ViewModels
-        collection.AddSingleton<MainWindowViewModel>();
-        collection.AddSingleton<UpdateViewModel>();
-        collection.AddSingleton<MainViewModel>();
-        collection.AddSingleton<EncounterViewModel>();
-        collection.AddSingleton<CampaignDetailViewModel>();
-        collection.AddSingleton<SettingsViewModel>();
-        collection.AddSingleton<ShellViewModel>();
+        services.AddSingleton<MainWindowViewModel>();
+        services.AddSingleton<UpdateViewModel>();
+        services.AddSingleton<MainViewModel>();
+        services.AddSingleton<EncounterViewModel>();
+        services.AddSingleton<CampaignDetailViewModel>();
+        services.AddSingleton<SettingsViewModel>();
+        services.AddSingleton<ShellViewModel>();
 
         // Pages (transient so fresh instances are created on navigation)
-        collection.AddTransient<CampaignsPage>();
-        collection.AddTransient<CampaignDetailPage>();
-        collection.AddTransient<EncountersPage>();
-        collection.AddTransient<InitiativePage>();
-        collection.AddTransient<SettingsPage>();
+        services.AddTransient<CampaignsPage>();
+        services.AddTransient<CampaignDetailPage>();
+        services.AddTransient<EncountersPage>();
+        services.AddTransient<InitiativePage>();
+        services.AddTransient<SettingsPage>();
 
         // Window
-        collection.AddSingleton<MainWindow>();
+        services.AddSingleton<MainWindow>();
+    }
 
-        _services = collection.BuildServiceProvider();
+    protected override async void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
 
         // Apply WPF-UI dark theme
         ApplicationThemeManager.Apply(ApplicationTheme.Dark);

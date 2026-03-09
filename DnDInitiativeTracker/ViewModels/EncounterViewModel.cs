@@ -1,9 +1,9 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DnDInitiativeTracker.Core.Interfaces.Repositories;
+using DnDInitiativeTracker.Core.Interfaces.Services;
 using DnDInitiativeTracker.Core.Models;
-using DnDInitiativeTracker.Core.Repositories;
-using DnDInitiativeTracker.Core.Services;
 using DnDInitiativeTracker.Pages;
 using Wpf.Ui;
 using Wpf.Ui.Controls;

@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
+using DnDInitiativeTracker.Core.Interfaces.Services;
 using DnDInitiativeTracker.Core.Models;
 
 namespace DnDInitiativeTracker.Core.Services;

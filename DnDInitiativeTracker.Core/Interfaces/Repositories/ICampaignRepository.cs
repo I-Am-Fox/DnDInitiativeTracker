@@ -1,6 +1,6 @@
 using DnDInitiativeTracker.Core.Models;
 
-namespace DnDInitiativeTracker.Core.Repositories;
+namespace DnDInitiativeTracker.Core.Interfaces.Repositories;
 
 public interface ICampaignRepository
 {

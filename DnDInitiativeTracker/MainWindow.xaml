@@ -184,7 +184,7 @@
                             <TextBlock Text="D&amp;D Initiative Tracker"
                                        FontSize="11" FontWeight="SemiBold"
                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="v1.2.0 — Ready"
+                            <TextBlock Text="{Binding ApplicationVersion}"
                                        FontSize="10"
                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
                         </StackPanel>
