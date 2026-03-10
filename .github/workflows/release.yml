@@ -50,10 +50,6 @@ jobs:
         shell: pwsh
         run: |
           dotnet tool install -g vpk
-          try {
-            vpk download github --repoUrl https://github.com/I-Am-Fox/DnDInitiativeTracker --token ${{ secrets.GITHUB_TOKEN }}
-          } catch {
-            Write-Host "No previous releases found (expected for first release)"
-          }
-          vpk pack -u DnDInitiativeTracker -v ${{ steps.extract_version.outputs.version }} -p publish -e DnDInitiativeTracker.exe
-          vpk upload github --repoUrl https://github.com/I-Am-Fox/DnDInitiativeTracker --publish --releaseName "DnDInitiativeTracker v${{ steps.extract_version.outputs.version }}" --tag v${{ steps.extract_version.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }}
+          vpk download github --repoUrl https://github.com/I-Am-Fox/DnDInitiativeTracker --token ${{ secrets.GITHUB_TOKEN }} --channel win
+          vpk pack -u DnDInitiativeTracker -v ${{ steps.extract_version.outputs.version }} -p publish -e DnDInitiativeTracker.exe --channel win
+          vpk upload github --repoUrl https://github.com/I-Am-Fox/DnDInitiativeTracker --publish --releaseName "DnDInitiativeTracker v${{ steps.extract_version.outputs.version }}" --tag v${{ steps.extract_version.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }} --channel win
