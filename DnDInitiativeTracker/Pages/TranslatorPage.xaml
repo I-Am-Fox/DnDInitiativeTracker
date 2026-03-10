@@ -1,0 +1,69 @@
+﻿<Page x:Class="DnDInitiativeTracker.Pages.TranslatorPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Translator"
+      Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+      Background="Transparent">
+
+    <Page.Resources>
+        <!-- Load the Draconic font from the embedded TTF resource -->
+        <FontFamily x:Key="DraconicFont">pack://application:,,,/Assets/#Nu_draconic</FontFamily>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32,24,32,32" MaxWidth="700" HorizontalAlignment="Left">
+
+            <!-- Header -->
+            <TextBlock Text="Translator"
+                       FontSize="28" FontWeight="Bold"
+                       Margin="0,0,0,4"/>
+            <TextBlock Text="Type plain English text to see it rendered in Draconic script."
+                       FontSize="13"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Margin="0,0,0,28"/>
+
+            <!-- Input Card -->
+            <Border Style="{StaticResource DashboardCardStyle}" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="INPUT" FontSize="11" FontWeight="Bold"
+                               Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+                               Margin="0,0,0,12"/>
+
+                    <TextBox Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             MinHeight="100"
+                             FontSize="14"
+                             Padding="8"/>
+
+                    <ui:Button Content="Clear"
+                               Icon="{ui:SymbolIcon Delete24}"
+                               Command="{Binding ClearCommand}"
+                               Margin="0,12,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Output Card -->
+            <Border Style="{StaticResource DashboardCardStyle}">
+                <StackPanel>
+                    <TextBlock Text="DRACONIC OUTPUT" FontSize="11" FontWeight="Bold"
+                               Foreground="{DynamicResource SystemAccentColorPrimaryBrush}"
+                               Margin="0,0,0,12"/>
+
+                    <Border Padding="16" CornerRadius="6"
+                            Background="{DynamicResource NavItemHoverBrush}"
+                            MinHeight="100">
+                        <TextBlock Text="{Binding OutputText}"
+                                   TextWrapping="Wrap"
+                                   FontSize="28"
+                                   FontFamily="{StaticResource DraconicFont}"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
+

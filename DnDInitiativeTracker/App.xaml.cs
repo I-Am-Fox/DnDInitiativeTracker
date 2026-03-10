@@ -76,6 +76,7 @@ public partial class App : Application
         services.AddSingleton<EncounterViewModel>();
         services.AddSingleton<CampaignDetailViewModel>();
         services.AddSingleton<SettingsViewModel>();
+        services.AddSingleton<TranslatorViewModel>();
         services.AddSingleton<ShellViewModel>();
 
         // Pages (transient so fresh instances are created on navigation)
@@ -84,6 +85,7 @@ public partial class App : Application
         services.AddTransient<EncountersPage>();
         services.AddTransient<InitiativePage>();
         services.AddTransient<SettingsPage>();
+        services.AddTransient<TranslatorPage>();
 
         // Window
         services.AddSingleton<MainWindow>();

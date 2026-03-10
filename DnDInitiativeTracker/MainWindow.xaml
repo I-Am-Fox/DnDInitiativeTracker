@@ -162,13 +162,13 @@
                                 </StackPanel>
                             </ListBoxItem>
 
-                            <!-- Settings -->
-                            <ListBoxItem Tag="Settings">
+                            <!-- Translator -->
+                            <ListBoxItem Tag="Translator">
                                 <StackPanel Orientation="Horizontal">
-                                    <ui:SymbolIcon Symbol="Settings24" FontSize="16"
+                                    <ui:SymbolIcon Symbol="LocalLanguage24" FontSize="16"
                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                    VerticalAlignment="Center" Margin="0,0,12,0"/>
-                                    <TextBlock Text="Settings" FontSize="13" FontWeight="Medium"
+                                    <TextBlock Text="Translator" FontSize="13" FontWeight="Medium"
                                                VerticalAlignment="Center"
                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                                 </StackPanel>
@@ -176,19 +176,35 @@
                         </ListBox>
                     </StackPanel>
 
-                    <!-- Footer -->
-                    <Border Grid.Row="2" Margin="16,0,16,16" Padding="12,10"
-                            CornerRadius="8"
-                            Background="{DynamicResource NavItemHoverBrush}">
-                        <StackPanel>
-                            <TextBlock Text="D&amp;D Initiative Tracker"
-                                       FontSize="11" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="{Binding ApplicationVersion}"
-                                       FontSize="10"
-                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
-                        </StackPanel>
-                    </Border>
+                    <!-- Footer: Settings + Version -->
+                    <StackPanel Grid.Row="2" Margin="12,0,12,16">
+                        <!-- Settings button pinned to bottom -->
+                        <Border CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                Background="Transparent" Cursor="Hand"
+                                MouseLeftButtonUp="FooterSettings_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="Settings24" FontSize="16"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <TextBlock Text="Settings" FontSize="13" FontWeight="Medium"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- App version info -->
+                        <Border Padding="12,10" CornerRadius="8"
+                                Background="{DynamicResource NavItemHoverBrush}">
+                            <StackPanel>
+                                <TextBlock Text="D&amp;D Initiative Tracker"
+                                           FontSize="11" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                                <TextBlock Text="{Binding ApplicationVersion}"
+                                           FontSize="10"
+                                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </Grid>
             </Border>
 

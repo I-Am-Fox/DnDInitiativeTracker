@@ -25,7 +25,8 @@ public sealed partial class ShellViewModel : ObservableObject
     [ObservableProperty]
     private int _selectedNavIndex;
 
-    // Nav items: 0=Campaigns, 1=CampaignDetails, 2=Encounters, 3=Initiative, 4=Settings
+    // Nav items: 0=Campaigns, 1=CampaignDetails, 2=Encounters, 3=Initiative, 4=Translator
+    //            Settings is pinned to the footer (not in the ListBox)
     public ShellViewModel(
         MainViewModel mainViewModel,
         EncounterViewModel encounterViewModel,
@@ -81,6 +82,9 @@ public sealed partial class ShellViewModel : ObservableObject
             case "Settings":
                 NavigateTo<SettingsPage>();
                 break;
+            case "Translator":
+                NavigateTo<TranslatorPage>();
+                break;
         }
     }
 
@@ -95,7 +99,8 @@ public sealed partial class ShellViewModel : ObservableObject
         else if (pageType == typeof(CampaignDetailPage)) SelectedNavIndex = 1;
         else if (pageType == typeof(EncountersPage)) SelectedNavIndex = 2;
         else if (pageType == typeof(InitiativePage)) SelectedNavIndex = 3;
-        else if (pageType == typeof(SettingsPage)) SelectedNavIndex = 4;
+        else if (pageType == typeof(TranslatorPage)) SelectedNavIndex = 4;
+        else if (pageType == typeof(SettingsPage)) SelectedNavIndex = -1;
     }
 
     private async Task OnCampaignSelectedAsync(Campaign? campaign)
@@ -110,4 +115,3 @@ public sealed partial class ShellViewModel : ObservableObject
         await EncounterViewModel.LoadForCampaignAsync(campaign.Slug, campaign);
     }
 }
-

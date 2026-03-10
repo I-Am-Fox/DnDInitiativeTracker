@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using DnDInitiativeTracker.ViewModels;
 using Wpf.Ui;
@@ -42,5 +43,15 @@ public partial class MainWindow : Wpf.Ui.Controls.FluentWindow
             }
         }
     }
-}
 
+    // Navigate to settings from footer border
+    private void FooterSettings_Click(object sender, MouseButtonEventArgs e)
+    {
+        // Deselect the main nav so Settings appears independently
+        _suppressNavEvent = true;
+        NavListBox.SelectedIndex = -1;
+        _suppressNavEvent = false;
+
+        _shell.Navigate("Settings");
+    }
+}
