@@ -9,7 +9,7 @@ namespace DnDInitiativeTracker.Core.Config
     public static class AppInfo
     {
         public static string ApplicationName { get; set; } = "DnDInitiativeTracker";
-        public static string ApplicationVersion { get; set; } = "1.0.0";
+        public static string ApplicationVersion { get; set; } = "1.0.1";
         public static string SettingsFolderName { get; set; } = "DnDInitiativeTracker";
         public static string GitHubRepositoryOwner { get; set; } = "I-Am-Fox";
         public static string GitHubRepositoryName { get; set; } = "DnDInitiativeTracker";
